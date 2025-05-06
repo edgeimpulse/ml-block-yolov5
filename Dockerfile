@@ -24,7 +24,7 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 # CUDA drivers
 SHELL ["/bin/bash", "-c"]
 COPY ./install_cuda.sh ./install_cuda.sh
-RUN ./install_cuda.sh && \
+RUN bash ./install_cuda.sh && \
     rm install_cuda.sh
 
 # System dependencies
