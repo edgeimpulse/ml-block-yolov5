@@ -21,10 +21,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 # See https://python-poetry.org/docs/configuration/#virtualenvsin-project
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 
+# When building on Windows we'll get CRLF line endings, which we cannot run from bash...
+RUN apt update && apt install -y dos2unix
+
 # CUDA drivers
 SHELL ["/bin/bash", "-c"]
-COPY ./install_cuda.sh ./install_cuda.sh
-RUN bash ./install_cuda.sh && \
+COPY build-dependencies/install_cuda.sh ./install_cuda.sh
+RUN dos2unix ./install_cuda.sh && \
+    /bin/bash ./install_cuda.sh && \
     rm install_cuda.sh
 
 # System dependencies
@@ -47,8 +51,9 @@ RUN pip3 install -r requirements.txt
 RUN apt update && apt install -y pkg-config libhdf5-dev
 
 # Install TensorFlow
-COPY install_tensorflow.sh install_tensorflow.sh
-RUN /bin/bash install_tensorflow.sh && \
+COPY build-dependencies/install_tensorflow.sh install_tensorflow.sh
+RUN dos2unix ./install_tensorflow.sh && \
+    /bin/bash ./install_tensorflow.sh && \
     rm install_tensorflow.sh
 
 # Patch up torch to disable cuda warnings
