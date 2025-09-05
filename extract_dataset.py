@@ -19,6 +19,9 @@ with open(os.path.join(args.data_directory, 'Y_split_test.npy'), 'r') as f:
     Y_test = json.loads(f.read())
 
 image_width, image_height, image_channels = list(X_train.shape[1:])
+if image_width != image_height:
+    print('Error: only square images are supported (width != height)')
+    exit(1)
 
 out_dir = args.out_directory
 if os.path.exists(out_dir) and os.path.isdir(out_dir):
